@@ -1,0 +1,47 @@
+# OMP-owned SpineConfig, passed explicitly to the shared Spine Core/WASM runtime.
+# Native OMP loads this package file for both JIT prompts and xdev tool discovery.
+# Editing it does not require a WASM rebuild. A missing file is a load error;
+# the OMP adapter never falls back to Core's embedded configuration.
+schema_version = 1
+
+[prompt]
+jit = '''<spine_instruction>
+All substantive work MUST take place within explicit SpineBranches.
+
+Spine controls are native OMP discoverable devices, not top-level model tools. Read xd://spine_open, xd://spine_close, xd://spine_next, or xd://spine_spawn for documentation and schema; execute by writing the JSON argument object as content to the same xd:// device. Native read/write tools carry discovery and execution. Device documentation may already be inlined by OMP.
+
+Use recursive calls: each branch owns one outcome. Work toward that outcome there, including synthesis and routine checks. Open a direct child for a distinct unresolved subproblem needed for that outcome, and apply the same rule inside it.
+
+The active branch is the innermost unclosed <spine_node>. spine_open enters its child. spine_close returns exactly one level. spine_next returns one level and enters a sibling under that parent. <spine_memory> carries a returned result. Runtime replaces completed local history with that memory.
+
+When the local outcome is complete or cancelled, close the branch with its result. Continue in the parent; if its outcome is also complete, close it too. For new work, first reach the branch whose goal directly needs it, then open its child. Use spine_next only when that owner is your immediate parent. State the intended outcome in each goal.
+
+Work may span user turns. Apply corrections and cancellations immediately. Revisit completed work for new evidence, changed requirements, or a specific gap. Preserve unresolved obligations without claiming success.
+
+Memory adds what continuation needs beyond inherited context and retained child results: local findings, changed conclusions, synthesis, and remaining obligations. Preserve necessary evidence and referents.
+
+Root coordinates; enter a branch before substantive work. Answer the user in any scope.
+
+Use at most one Spine operation per model response. Call spine_close as the only tool in its response. With spine_open or spine_next, ordinary tools in that response belong to the destination scope. Results needed to finish the old scope must already be known.
+
+When multiple independent child scopes are identified, use spine_spawn when enabled; otherwise process them sequentially with spine_open and spine_next.
+</spine_instruction>
+'''
+node = ""
+spawn = ""
+# Core requires nonempty collaboration-mode slots when Spawn is enabled.
+# Both preserve OMP's native delegation policy instead of overriding it.
+spawn_explicit_request_only = "OMP's native harness determines whether its task collaboration surface is available and permitted. Spine Spawn is a separate asynchronous control exposed at xd://spine_spawn."
+spawn_proactive = "OMP's native harness determines whether its task collaboration surface is available and permitted. Spine Spawn is a separate asynchronous control exposed at xd://spine_spawn."
+
+[tools.open]
+description = "Enter a direct child for goal. Opening preserves context and leaves earlier work in its existing scope. Read xd://spine_open for the schema; write its JSON arguments to xd://spine_open to execute."
+
+[tools.close]
+description = "Finalize the local scope with memory and return to the immediate parent. Call it as the only tool in its response. Root cannot close. Read xd://spine_close for the schema; write its JSON arguments to xd://spine_close to execute."
+
+[tools.next]
+description = "Finalize the local scope with memory and enter another child of the same parent for goal. Root cannot next. Read xd://spine_next for the schema; write its JSON arguments to xd://spine_next to execute."
+
+[tools.spawn]
+description = "Start two or more independent peer branches from the current scope. Give each branch a unique concise summary, a self-contained assignment and an observable completion condition. If the branches need to coordinate, create one task-local shared directory and give them its path. Assign disjoint production-file ownership or name one integration owner; workspace changes are not transactional. Use one Spine operation per model response. The parent does not wait: continue work that does not depend on the children, or end your reply if there is nothing else to do. Each child ends with a plain final reply and each result or failure arrives separately as a typed Spine arrival. Do not close or move on from the scope until its children have arrived. Read xd://spine_spawn for the schema; write its JSON arguments to xd://spine_spawn to execute."

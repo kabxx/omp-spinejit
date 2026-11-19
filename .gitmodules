@@ -1,0 +1,3 @@
+[submodule "upstream/spine-plugin"]
+	path = upstream/spine-plugin
+	url = https://github.com/GhabiX/spine-plugin.git
